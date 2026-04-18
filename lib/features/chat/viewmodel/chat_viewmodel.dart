@@ -19,6 +19,7 @@ class ChatViewModel extends BaseViewModel {
     required this.otherUserId,
   });
 
+
   // 💬 Messages list
   final List<MessageModel> messages = [];
   String get userID => myUserId.toString();
