@@ -21,6 +21,9 @@ class ChatViewModel extends BaseViewModel {
 
   // 💬 Messages list
   final List<MessageModel> messages = [];
+  String get userID => myUserId.toString();
+  String get callID => conversationId.toString();
+  String get userName => "User_$myUserId";
 
   // 📄 Pagination
   int _page = 1;

@@ -38,6 +38,17 @@ class _ChatViewState extends State<ChatView> {
   final TextEditingController _messageController = TextEditingController();
   TextEditingController _textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final ValueNotifier<bool> showFullDate = ValueNotifier(true);
+  @override
+  void initState() {
+    super.initState();
+
+    if (!widget.isOnline) {
+      Future.delayed(Duration(seconds: 3), () {
+        showFullDate.value = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,76 +62,13 @@ class _ChatViewState extends State<ChatView> {
       builder: (context, vm, _) {
         return Scaffold(
           appBar: AppBar(
+            titleSpacing: 0,
             actions: [
               IconButton(onPressed: (){
-                showDialog(context: context, builder: (context) {
-                  return AlertDialog(backgroundColor: Colors.white, shape: RoundedRectangleBorder(),
-                    insetPadding: EdgeInsets.all(0),
-                    title: Column(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Colors.blue.shade50,
-                          child: Icon(Icons.videocam, color: Colors.blue, size: 30),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          "Start Video Call",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 5,),
-                        Text(
-                          "Enter User ID to start call",
-                          style: TextStyle(color: Colors.black,fontSize: 18),
-                        ),
-                        SizedBox(height: 15),
-                        AppTextField(
-                          controller: _textController,
-                          hintText: "Please Required ID*",
-                          prefixIcon: Icon(Icons.person),
-                        ),
-                        SizedBox(height: 20,),
-                        Row(
-                          children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: MaterialButton(onPressed: (){
-                                  Navigator.pop(context);
-                                },height: 45,minWidth: 120,shape: OutlineInputBorder(borderSide: BorderSide(color: Color(0xff2c5364))),child: Text("Cancel",style: TextStyle(color: Colors.black),),
-                                ),
-                              ),
-
-                              MaterialButton(onPressed: (){
-                                String callId = _textController.text.trim();
-
-                                if (callId.isEmpty) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text("Please enter User ID"),
-                                    ),
-                                  );
-                                  return;
-                                }
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => CallingPage(callID: _textController.text),));
-                              },height: 45,minWidth: 120,color: Color(0xff2c5364),shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),child: Row(
-                                children: [
-                                  Icon(Icons.videocam,color: Colors.white,),
-                                  SizedBox(width: 15,),
-                                  Text("Join",style: TextStyle(color: Colors.white),),
-                                ],
-                              ),
-                              ),
-                          ],
-                        )
-                      ],
-                    ),
-                  );
-                },);
-              },
-                icon: Icon(Icons.videocam),)
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CallingPage(callID: vm.callID, userID: vm.userID, userName: vm.userName),));
+              }, icon: Icon(Icons.videocam),),
+              IconButton(onPressed: (){}, icon: Icon(Icons.call)),
+              IconButton(onPressed: (){}, icon: Icon(Icons.more_vert)),
             ],
             title: Row(
               children: [
@@ -128,24 +76,37 @@ class _ChatViewState extends State<ChatView> {
                   child: Text(widget.otherUserName[0]),
                 ),
                 const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.otherUserName,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-
-                    Text(
-                      widget.isOnline
-                          ? "Online"
-                          : "Last seen ${DateUtilsHelper.lastSeen(widget.lastSeen!)}",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: widget.isOnline ? Colors.green : Colors.grey,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.otherUserName,
+                        style: const TextStyle(fontSize: 16),
                       ),
-                    ),
-                  ],
+
+                      ValueListenableBuilder<bool>(
+                        valueListenable: showFullDate,
+                        builder: (context, value, child) {
+                          return AnimatedSwitcher(
+                            duration: Duration(milliseconds: 400),
+                            child: Text(
+                              widget.isOnline
+                                  ? "Online"
+                                  : value
+                                  ? "Last seen ${DateUtilsHelper.lastSeenDate(widget.lastSeen!)}"
+                                  : "${DateUtilsHelper.lastSeenTime(widget.lastSeen!)}",
+                              key: ValueKey(value),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: widget.isOnline ? Colors.green : Colors.grey,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

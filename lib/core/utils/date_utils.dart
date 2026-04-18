@@ -65,4 +65,16 @@ class DateUtilsHelper {
         yesterday.month == date.month &&
         yesterday.day == date.day;
   }
+
+  /// Last seen DATE → 18/04/2026
+  static String lastSeenDate(String date) {
+    final dt = parse(date);
+    return DateFormat("dd/MM/yyyy").format(dt);
+  }
+
+  /// Last seen TIME → 10:45 AM
+  static String lastSeenTime(String date) {
+    final dt = parse(date);
+    return DateFormat(AppConstants.chatTimeFormat).format(dt);
+  }
 }
