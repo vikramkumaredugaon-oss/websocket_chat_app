@@ -4,14 +4,23 @@ import 'package:websocket_chat/core/theme/colors.dart';
 import '../../../core/base/base_view.dart';
 import '../../../core/base/view_state.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/fcm/user_device_token_service.dart';
 import '../../../core/utils/validators.dart';
 import '../../../widgets/app_textfield.dart';
 import '../../../widgets/primary_button.dart';
 import '../viewmodel/auth_viewmodel.dart';
 
-class RegisterView extends StatelessWidget {
+class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
 
+  @override
+  State<RegisterView> createState() => _RegisterViewState();
+}
+
+class _RegisterViewState extends State<RegisterView> {
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return BaseView<AuthViewModel>(
@@ -91,31 +100,25 @@ class RegisterView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         AppTextField(
+                          controller: _nameController,
                           hintText: "Enter Name",
                           validator: Validators.name,
-                          onChanged: vm.setName,
                           prefixIcon: const Icon(Icons.person),
                         ),
 
-                        const SizedBox(height: 16),
-
-                        /// 📧 Email
                         AppTextField(
+                          controller: _emailController,
                           hintText: AppStrings.enterEmail,
                           keyboardType: TextInputType.emailAddress,
                           validator: Validators.email,
-                          onChanged: vm.setEmail,
                           prefixIcon: const Icon(Icons.email),
                         ),
 
-                        const SizedBox(height: 16),
-
-                        /// 🔐 Password
                         AppTextField(
+                          controller: _passwordController,
                           hintText: AppStrings.enterPassword,
                           obscureText: true,
                           validator: Validators.password,
-                          onChanged: vm.setPassword,
                           prefixIcon: const Icon(Icons.lock),
                           suffixIcon: const Icon(Icons.visibility_off),
                         ),
@@ -129,7 +132,18 @@ class RegisterView extends StatelessWidget {
                           text: "Register",
                           isLoading: vm.state == ViewState.loading,
                           onPressed: () async {
-                            final success = await vm.register();
+                            final deviceToken=await UserDeviceTokenService.getDeviceToken();
+
+                            // vm.setRegisterData(
+                            //   name: _nameController.text,
+                            //   email: _emailController.text,
+                            //   password: _passwordController.text,
+                            // );
+
+
+                            final success = await vm.register(name: _nameController.text, email: _emailController.text, password: _passwordController.text, deviceToken:deviceToken!);
+                            print("FCM device token store:- $deviceToken");
+
                             if (success && context.mounted) {
                               Navigator.pushReplacementNamed(context, "/login");
                             }

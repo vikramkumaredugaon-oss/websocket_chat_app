@@ -46,6 +46,7 @@ class AuthService {
     required String name,
     required String email,
     required String password,
+    String? deviceToken
   }) async {
     try {
       final res = await ApiClient.post(
@@ -54,6 +55,7 @@ class AuthService {
           "name": name,
           "email": email,
           "password": password,
+          "deviceToken":deviceToken
         },
       );
 

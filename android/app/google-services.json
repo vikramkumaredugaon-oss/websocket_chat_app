@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "4054569586",
+    "project_id": "chatting-notification",
+    "storage_bucket": "chatting-notification.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:4054569586:android:8661ae1fb968b98c82e8eb",
+        "android_client_info": {
+          "package_name": "com.example.websocket_chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAr400IHXGbmK2lAyMKuDVeR6-FXN4juqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

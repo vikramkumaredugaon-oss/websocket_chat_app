@@ -65,9 +65,11 @@ class _ChatViewState extends State<ChatView> {
             titleSpacing: 0,
             actions: [
               IconButton(onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => CallingPage(callID: vm.callID, userID: vm.userID, userName: vm.userName),));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CallingPage(callID: vm.callID, userID: vm.userID, userName: vm.userName, isVideoCall: true,),));
               }, icon: Icon(Icons.videocam),),
-              IconButton(onPressed: (){}, icon: Icon(Icons.call)),
+              IconButton(onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CallingPage(callID: vm.callID, userID: vm.userID, userName: vm.userName, isVideoCall: false,),));
+              }, icon: Icon(Icons.call)),
               IconButton(onPressed: (){}, icon: Icon(Icons.more_vert)),
             ],
             title: Row(
@@ -173,6 +175,7 @@ class _ChatViewState extends State<ChatView> {
                   controller: _messageController,
                   hintText: AppStrings.typeMessage,
                   maxLines: 1,
+                  suffixIcon: Icon(Icons.camera_alt_outlined),
                 ),
               ),
               Padding(
@@ -204,3 +207,6 @@ class _ChatViewState extends State<ChatView> {
     super.dispose();
   }
 }
+
+ 
+/// ajay.kumar@edugaon.com

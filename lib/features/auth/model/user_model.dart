@@ -2,12 +2,14 @@ class UserModel {
   final int id;
   final String name;
   final String email;
+  final String? deviceToken;
   final bool isOnline;
 
   UserModel({
     required this.id,
     required this.name,
     required this.email,
+    this.deviceToken,
     required this.isOnline,
   });
 
@@ -17,6 +19,7 @@ class UserModel {
       id: json['id'],
       name: json['name'] ?? "",
       email: json['email'] ?? "",
+      deviceToken: json['deviceToken'] ?? '',
       isOnline: json['is_online'] == 1 || json['is_online'] == true,
     );
   }
@@ -27,6 +30,7 @@ class UserModel {
       "id": id,
       "name": name,
       "email": email,
+      "deviceToken":deviceToken,
       "is_online": isOnline ? 1 : 0,
     };
   }

@@ -13,12 +13,21 @@ class AuthViewModel extends BaseViewModel {
   String _email = "";
   String _password = "";
   String _name = "";
-
   UserModel? currentUser;
 
   /// Called from BaseView.onModelReady
   void init() {
     AppLogger.info("AuthViewModel initialized", tag: "AUTH_VM");
+  }
+
+  void setRegisterData({
+    required String name,
+    required String email,
+    required String password,
+  }) {
+    _name = name.trim();
+    _email = email.trim();
+    _password = password;
   }
 
   // 🔧 Setters (called from UI)
@@ -58,21 +67,24 @@ class AuthViewModel extends BaseViewModel {
   }
 
   // 📝 REGISTER
-  Future<bool> register() async {
-    if (!formKey.currentState!.validate()) {
-      return false;
-    }
+  Future<bool> register({
+    required String name,
+    required String email,
+    required String password,
+    required String deviceToken
+  }) async {
+    if (!formKey.currentState!.validate()) return false;
 
     try {
       setLoading();
 
       currentUser = await AuthService.register(
-        name: _name,
-        email: _email,
-        password: _password,
+        name: name,
+        email: email,
+        password: password,
+        deviceToken: deviceToken,
       );
 
-      AppLogger.info("Registration successful", tag: "AUTH_VM");
       setIdle();
       return true;
     } catch (e) {

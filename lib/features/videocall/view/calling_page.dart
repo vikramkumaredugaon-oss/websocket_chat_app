@@ -1,28 +1,37 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:websocket_chat/features/videocall/constant/app_info.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
-class CallingPage extends StatefulWidget {
+
+class CallingPage extends StatelessWidget {
   final String callID;
   final String userID;
   final String userName;
-  const CallingPage({super.key, required this.callID, required this.userID, required this.userName});
+  final bool isVideoCall;
 
-  @override
-  State<CallingPage> createState() => _CallingPageState();
-}
+  const CallingPage({
+    super.key,
+    required this.callID,
+    required this.userID,
+    required this.userName,
+    required this.isVideoCall,
+  });
 
-class _CallingPageState extends State<CallingPage> {
   @override
   Widget build(BuildContext context) {
-    return ZegoUIKitPrebuiltCall(
+
+    final config = isVideoCall
+        ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
+        : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall();
+
+    return Scaffold(
+      body: ZegoUIKitPrebuiltCall(
         appID: AppInfo.appId,
         appSign: AppInfo.appSign,
-        callID: widget.callID,
-        userID: widget.userID,
-        userName: widget.userName,
-        config: ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
+        callID: callID,
+        userID: userID,
+        userName: userName,
+        config: config,
+      ),
     );
   }
 }

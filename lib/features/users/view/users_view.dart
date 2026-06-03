@@ -133,16 +133,37 @@ class _UserTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onTap,
-      leading: CircleAvatar(
-        child: Text(
-          user.name.isNotEmpty
-              ? user.name[0].toUpperCase()
-              : "?",
-        ),
+      leading: Stack(
+        children: [
+          CircleAvatar(
+            radius: 24,
+            child: Text(
+              user.name.isNotEmpty
+                  ? user.name[0].toUpperCase()
+                  : "?",
+            ),
+          ),
+
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: Container(
+                width: 14,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: user.isOnline ? Colors.green : Colors.grey,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.white,
+                    width: 2,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
       title: Text(user.name),
       subtitle: Text(user.email),
-      trailing: _OnlineDot(isOnline: user.isOnline),
     );
   }
 }
